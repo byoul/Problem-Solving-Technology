@@ -1,0 +1,91 @@
+//SSEA 7988 solved.
+#include <iostream>
+#include <map>
+#include <string>
+#include <queue>
+
+using namespace std;
+struct Sinergy{
+    string a;
+    string b;
+};
+
+
+int main() {
+
+    int T,K;
+    cin>>T;
+    for(int i=0; i<T; i++){
+        queue < Sinergy > que;
+        bool ans = true;
+        cin>>K;
+        //Input Setting
+        for(int j=0; j<K; j++){
+            string a,b;
+            Sinergy sinergy;
+            cin>>a>>b;
+            sinergy.a = a;
+            sinergy.b = b;
+            que.push(sinergy);
+        }
+        map <string, int> team;
+
+        team.insert(make_pair(que.front().a, 1));
+        team.insert(make_pair(que.front().b, 2));
+        que.pop();
+
+        Sinergy tmp;
+        tmp.a = "";
+        tmp.b = "";
+        while(!que.empty()){
+            string a,b;
+            a = que.front().a;
+            b = que.front().b;
+            que.pop();
+            if(team.find(a)->second ==1){
+                if(team.find(b)->second==1){
+                    //cout<<"same team"<<endl;
+                    ans = false;
+                    break;
+                }
+                if(team.find(b)->second!=2)
+                    team.insert(make_pair(b, 2));
+            }
+            else if(team.find(a)->second ==2){
+                if(team.find(b)->second==2){
+                    //cout<<"same team"<<endl;
+                    ans = false;
+                    break;
+                }
+                if(team.find(b)->second !=1)
+                    team.insert(make_pair(b, 1));
+            }
+            else {//a is not the team member
+                if (team.find(b)->second == 1)
+                    team.insert(make_pair(a, 2));
+                else if (team.find(b)->second == 2)
+                    team.insert(make_pair(a, 1));
+
+                else {// a and b are not team member
+                    if (tmp.a == a && tmp.b == b) {
+                        team.insert(make_pair(a, 1));
+                        team.insert(make_pair(b, 2));
+                        tmp.a = "";
+                        tmp.b = "";
+                    } else {
+                        tmp.a = a;
+                        tmp.b = b;
+                        que.push(tmp);
+                    }
+                }
+            }
+        }
+
+        cout<<"#" << i+1<<' ' ;
+        if(ans) cout<<"Yes\n";
+        else cout<<"No\n";
+
+    }
+    return 0;
+
+}
